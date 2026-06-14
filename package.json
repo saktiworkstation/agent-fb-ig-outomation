@@ -1,0 +1,37 @@
+{
+  "name": "agent-facebook-gym",
+  "version": "1.0.0",
+  "description": "Facebook Marketing Automation Agent — auto-post, comment reply, ads management",
+  "main": "dist/index.js",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "build": "tsc",
+    "start:prod": "node dist/index.js",
+    "cli": "ts-node src/cli.ts",
+    "post": "ts-node src/cli.ts post",
+    "auth-test": "ts-node src/cli.ts auth-test",
+    "poll-comments": "ts-node src/cli.ts poll-comments",
+    "metrics": "ts-node src/cli.ts metrics",
+    "create-ad": "ts-node src/cli.ts create-ad"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "axios": "^1.15.0",
+    "better-sqlite3": "^12.9.0",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "node-cron": "^4.2.1",
+    "openai": "^6.34.0"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.6.0",
+    "@types/node-cron": "^3.0.11",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.2"
+  }
+}

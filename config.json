@@ -1,0 +1,321 @@
+{
+  "product": {
+    "name": "Ganesha Fitness",
+    "description": "Platform manajemen gym terdepan di Indonesia sekaligus produsen alat fitness berkualitas import untuk gym profesional maupun personal di seluruh Indonesia",
+    "currency": "IDR",
+    "url": "https://ganeshafitness.id/",
+    "lines": {
+      "saas": {
+        "name": "Ganesha Fitness SaaS",
+        "description": "Software manajemen gym berbasis cloud — kelola member, absensi, tagihan, dan laporan dalam satu platform",
+        "url": "https://ganeshafitness.id/",
+        "starting_price": "Rp 10.000",
+        "packages": [
+          {
+            "id": 1,
+            "segment": "Personal",
+            "name": "Personal",
+            "tagline": "Permulaan | Home Gym",
+            "price_monthly": 10000,
+            "price_yearly": null,
+            "duration": "1 Minggu",
+            "multi_branch": false
+          },
+          {
+            "id": 2,
+            "segment": "Gym Owner",
+            "name": "PREFECT (The Governor)",
+            "price_monthly": 1000000,
+            "price_yearly": 11000000,
+            "yearly_package_name": "THE GARRISON MASTER",
+            "multi_branch": true
+          },
+          {
+            "id": 4,
+            "segment": "Gym Owner",
+            "name": "LEGATE (The General)",
+            "price_monthly": 1500000,
+            "price_yearly": 16500000,
+            "yearly_package_name": "THE LEGION COMMANDER",
+            "multi_branch": false
+          },
+          {
+            "id": 6,
+            "segment": "Gym Owner",
+            "name": "IMPERATOR (The Emperor)",
+            "price_monthly": 2000000,
+            "price_yearly": 22000000,
+            "yearly_package_name": "THE ETERNAL EMPIRE",
+            "multi_branch": false
+          },
+          {
+            "id": 8,
+            "segment": "Gym Owner",
+            "name": "Tiro (The New Blood)",
+            "price_monthly": 300000,
+            "price_yearly": 3200000,
+            "yearly_package_name": "THE RECRUIT'S SHIELD",
+            "multi_branch": false
+          },
+          {
+            "id": 10,
+            "segment": "Gym Owner",
+            "name": "DECURION (The Squad Leader)",
+            "price_monthly": 500000,
+            "price_yearly": 5500000,
+            "yearly_package_name": "THE CAVALRY LEAD",
+            "multi_branch": false
+          },
+          {
+            "id": 12,
+            "segment": "Gym Owner",
+            "name": "CENTURION (The Backbone)",
+            "price_monthly": 750000,
+            "price_yearly": 8250000,
+            "yearly_package_name": "THE CENTURY GUARD",
+            "multi_branch": false
+          }
+        ],
+        "usp": [
+          "Manajemen member & absensi otomatis",
+          "Laporan keuangan real-time",
+          "Notifikasi tagihan member otomatis",
+          "Multi-cabang tersedia di paket PREFECT ke atas",
+          "Akses dari mana saja via browser"
+        ]
+      },
+      "equipment": {
+        "name": "Ganesha Fitnes — Produksi Alat Fitness",
+        "description": "Produsen dan supplier alat fitness kualitas import, tersedia untuk gym komersial, sekolah, hotel, dan home gym",
+        "url": "https://ganesha-fitness-production.vercel.app/",
+        "address": "Gajah 02/03 Sedayu, Jumantono, Karanganyar, Solo",
+        "whatsapp": "082136353579",
+        "starting_price": "Rp 500.000",
+        "categories": [
+          "Chest & Press",
+          "Back & Row",
+          "Shoulder",
+          "Leg",
+          "Core & Abdominal",
+          "Cable Machine",
+          "Smith Machine",
+          "Rack & Storage",
+          "Multi Station"
+        ],
+        "product_list": [
+          "Soulder Press Multi",
+          "Sky Way",
+          "Dipping Chin Up",
+          "Lat Row",
+          "Smith Machin",
+          "Shoulder Pres Multi",
+          "Latpuldon FW",
+          "Bend Press",
+          "Legkurl Extention",
+          "Pricher Freweigh",
+          "Leg Press",
+          "Inklin Press",
+          "Abdominal Roler",
+          "Hip Trus",
+          "Set Up",
+          "Bek Up",
+          "Pricher Manual",
+          "Adjustabel",
+          "Rak Dumbel",
+          "Smith Crosofer + Puldon & Row",
+          "Super Squat",
+          "Rak Barbel",
+          "Cabel Cros Multi Full Sesen",
+          "Crosofer Multy",
+          "Smith Multy",
+          "Power Tak",
+          "Abdominal Crunch",
+          "Latpuldown & Row",
+          "Cabel Pully",
+          "Buterfly",
+          "Smith Machin Multi",
+          "Soulder Press Freweigh",
+          "Saouder Pres FW",
+          "Dip Chin Machin",
+          "Iner Outher",
+          "Pricher Machin",
+          "Smith Multi 1",
+          "Abdominimal Sik Peck",
+          "Inklen Press",
+          "Cabelcros Multi Fullsesen Kanan 8 Star",
+          "Leg Press Squat",
+          "Bek Buterfly",
+          "Leg Press Horizontal",
+          "Smith Machin Balance",
+          "Cabel Cross",
+          "Rotary Machin",
+          "Cabelcros Multi Fullsesen Kiri 8 Star",
+          "Chess Pres FW"
+        ],
+        "usp": [
+          "Produksi sendiri, harga kompetitif",
+          "Kualitas setara import",
+          "Pengiriman ke seluruh Indonesia",
+          "Konsultasi gratis setup gym",
+          "Tersedia paket lengkap gym komersial",
+          "Bisa order custom sesuai kebutuhan"
+        ]
+      }
+    }
+  },
+  "brand": {
+    "toneOfVoice": "energetic",
+    "language": "Bahasa Indonesia",
+    "targetAudience": {
+      "saas": "Pemilik gym dan fitness center di Indonesia yang ingin mengelola bisnis gym lebih efisien dan profesional",
+      "equipment": "Pemilik gym, hotel, sekolah, instansi, dan fitness enthusiast yang ingin membangun atau melengkapi fasilitas gym berkualitas"
+    },
+    "brandValues": [
+      "kualitas",
+      "kekuatan",
+      "motivasi",
+      "kesehatan",
+      "profesional"
+    ],
+    "writingStyle": "Gunakan bahasa Indonesia yang energik, motivasional, dan penuh semangat. Gunakan kata-kata yang membangkitkan semangat seperti 'Ayo', 'Raih', 'Wujudkan', 'Maksimalkan'. Sesekali boleh pakai istilah fitness dalam Bahasa Inggris yang sudah umum dikenal. Untuk konten SaaS, tonjolkan efisiensi dan kemudahan pengelolaan bisnis gym."
+  },
+  "posting": {
+    "contentStrategy": {
+      "distribution": {
+        "saas": 60,
+        "equipment": 30,
+        "bundle": 10
+      },
+      "primaryFocus": "saas",
+      "instructions": "Prioritaskan konten tentang Ganesha Fitness SaaS (software manajemen gym). Setiap 3 post, minimal 2 harus tentang fitur SaaS, benefit digitalisasi gym, atau paket berlangganan. Konten equipment boleh muncul sebagai pelengkap atau bundle dengan SaaS. Jangan generate konten equipment saja tanpa menyebut SaaS kecuali post type adalah equipment_showcase.",
+      "saasKeyMessages": [
+        "Kelola gym lebih mudah dengan software Ganesha Fitness",
+        "Absensi member otomatis, tagihan otomatis, laporan real-time",
+        "Mulai dari Rp 300.000/bulan untuk gym owner",
+        "Coba gratis, upgrade kapan saja",
+        "Digitalisasi gymmu sekarang di ganeshafitness.id"
+      ]
+    },
+    "postTypes": [
+      "promo",
+      "testimonial",
+      "product_highlight",
+      "educational",
+      "saas_feature",
+      "equipment_showcase"
+    ],
+    "contentLineLabels": {
+      "saas": "[SaaS]",
+      "equipment": "[Alat Fitness]",
+      "bundle": "[Paket Lengkap]"
+    },
+    "hashtagGroups": {
+      "general": [
+        "#GaneshaFitness",
+        "#AlatFitness",
+        "#GymEquipment",
+        "#GymIndonesia",
+        "#FitnessIndonesia",
+        "#OlahragaYuk",
+        "#HidupSehat",
+        "#BodyGoals"
+      ],
+      "promo": [
+        "#PromoFitness",
+        "#DiskonGym",
+        "#HargaSpesial",
+        "#BeliSekarang",
+        "#GymMurah",
+        "#PaketGym",
+        "#InvestasiKesehatan",
+        "#GaneshaPromo"
+      ],
+      "testimonial": [
+        "#HasilNyata",
+        "#TransformasiFitness",
+        "#CustomerReview",
+        "#GymLokal",
+        "#BanggaBuatanIndonesia",
+        "#GaneshaFamily",
+        "#FitnessJourney"
+      ],
+      "product_highlight": [
+        "#GymEquipmentPremium",
+        "#AlatGym",
+        "#ProdusenAlatFitness",
+        "#Dumbbell",
+        "#BarbellSet",
+        "#WeightTraining",
+        "#FitnessTool",
+        "#AlatGymMurah"
+      ],
+      "saas_feature": [
+        "#SoftwareGym",
+        "#ManajemenGym",
+        "#AplikasiGym",
+        "#GymManagement",
+        "#DigitalisasiGym",
+        "#SaaSIndonesia",
+        "#BisnisGym",
+        "#GymOwner"
+      ],
+      "educational": [
+        "#TipsFitness",
+        "#CaraOlahraga",
+        "#FitnessEducation",
+        "#WorkoutTips",
+        "#GayaHidupSehat",
+        "#FitIndonesia",
+        "#GymTips",
+        "#TipsGymOwner"
+      ]
+    },
+    "maxHashtags": 12
+  },
+  "ads": {
+    "segments": {
+      "saas": {
+        "defaultAudience": {
+          "ageMin": 25,
+          "ageMax": 50,
+          "genders": [
+            1,
+            2
+          ],
+          "countries": [
+            "ID"
+          ],
+          "interests": [
+            "gym management",
+            "fitness business",
+            "entrepreneurship"
+          ]
+        },
+        "optimizationGoal": "LEAD_GENERATION",
+        "billingEvent": "IMPRESSIONS"
+      },
+      "equipment": {
+        "defaultAudience": {
+          "ageMin": 20,
+          "ageMax": 50,
+          "genders": [
+            1,
+            2
+          ],
+          "countries": [
+            "ID"
+          ],
+          "interests": [
+            "gym",
+            "fitness",
+            "bodybuilding",
+            "home gym"
+          ]
+        },
+        "optimizationGoal": "REACH",
+        "billingEvent": "IMPRESSIONS"
+      }
+    },
+    "defaultDurationDays": 7
+  }
+}

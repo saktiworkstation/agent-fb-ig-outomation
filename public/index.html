@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Social Media Marketing Agent</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #0f1117;
+      color: #e2e8f0;
+      min-height: 100vh;
+    }
+
+    header {
+      background: #1a1d27;
+      border-bottom: 1px solid #2d3148;
+      padding: 0 24px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header h1 { font-size: 18px; font-weight: 600; color: #fff; }
+
+    .status-bar {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #1e2235;
+      border: 1px solid #2d3148;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 13px;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #64748b;
+      transition: background 0.3s;
+    }
+    .dot.green { background: #22c55e; }
+    .dot.red   { background: #ef4444; }
+
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      gap: 20px;
+    }
+
+    /* Stats row */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .stat-card {
+      background: #1a1d27;
+      border: 1px solid #2d3148;
+      border-radius: 10px;
+      padding: 20px;
+    }
+
+    .stat-card .label {
+      font-size: 12px;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+
+    .stat-card .value {
+      font-size: 32px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .stat-card .sub {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    /* Actions */
+    .actions-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .btn-primary { background: #3b82f6; color: #fff; }
+    .btn-primary:hover:not(:disabled) { background: #2563eb; }
+
+    .btn-secondary { background: #1e2235; color: #e2e8f0; border: 1px solid #2d3148; }
+    .btn-secondary:hover:not(:disabled) { background: #252940; }
+
+    .btn-success { background: #16a34a; color: #fff; }
+    .btn-success:hover:not(:disabled) { background: #15803d; }
+
+    .post-type-select {
+      background: #1e2235;
+      border: 1px solid #2d3148;
+      color: #e2e8f0;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 14px;
+    }
+
+    /* Two-column layout */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    /* Panel */
+    .panel {
+      background: #1a1d27;
+      border: 1px solid #2d3148;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid #2d3148;
+      font-size: 13px;
+      font-weight: 600;
+      color: #94a3b8;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Log area */
+    .log-area {
+      background: #0d0f18;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: 12px;
+      line-height: 1.6;
+      padding: 12px;
+      height: 480px;
+      overflow-y: auto;
+      color: #94a3b8;
+    }
+
+    .log-area .log-line { white-space: pre-wrap; word-break: break-all; }
+    .log-area .log-line.INFO    { color: #94a3b8; }
+    .log-area .log-line.WARN    { color: #f59e0b; }
+    .log-area .log-line.ERROR   { color: #ef4444; }
+    .log-area .log-line.SUCCESS { color: #22c55e; }
+    .log-area .log-line.DEBUG   { color: #64748b; }
+
+    /* Recent posts */
+    .post-list { padding: 0; }
+    .post-item {
+      padding: 12px 18px;
+      border-bottom: 1px solid #1e2235;
+      font-size: 13px;
+    }
+    .post-item:last-child { border-bottom: none; }
+    .post-item .post-type {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: #3b82f620;
+      color: #60a5fa;
+      margin-bottom: 4px;
+    }
+    .post-item .post-msg {
+      color: #cbd5e1;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+    .post-item .post-time { font-size: 11px; color: #475569; margin-top: 4px; }
+
+    /* Ads metrics */
+    .metrics-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    .metrics-table th {
+      text-align: left;
+      padding: 8px 14px;
+      color: #64748b;
+      font-weight: 500;
+      border-bottom: 1px solid #1e2235;
+    }
+    .metrics-table td {
+      padding: 8px 14px;
+      color: #cbd5e1;
+      border-bottom: 1px solid #111421;
+    }
+    .metrics-table tr:last-child td { border-bottom: none; }
+    .no-data { padding: 24px; text-align: center; color: #475569; font-size: 13px; }
+
+    /* Config editor */
+    .config-editor {
+      grid-column: 1 / -1;
+    }
+
+    .config-textarea {
+      width: 100%;
+      background: #0d0f18;
+      border: none;
+      color: #a3e635;
+      font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+      font-size: 12px;
+      padding: 14px;
+      resize: vertical;
+      height: 320px;
+      outline: none;
+      line-height: 1.6;
+    }
+
+    .config-footer {
+      padding: 12px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #2d3148;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #1e2235;
+      border: 1px solid #2d3148;
+      border-radius: 8px;
+      padding: 12px 20px;
+      font-size: 14px;
+      display: none;
+      z-index: 100;
+    }
+    .toast.show { display: block; }
+    .toast.ok  { border-color: #22c55e; color: #22c55e; }
+    .toast.err { border-color: #ef4444; color: #ef4444; }
+
+    @media (max-width: 768px) {
+      .two-col { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: 1fr 1fr; }
+    }
+
+    /* ── Help Button ─────────────────────────────────────────────────────────── */
+    .btn-help {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      background: #7c3aed20;
+      border: 1px solid #7c3aed60;
+      border-radius: 20px;
+      color: #a78bfa;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .btn-help:hover { background: #7c3aed35; border-color: #a78bfa; }
+    .btn-help .help-icon { font-size: 15px; }
+
+    /* ── Help Modal Overlay ──────────────────────────────────────────────────── */
+    .help-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 999;
+      backdrop-filter: blur(4px);
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .help-overlay.open { display: flex; }
+
+    .help-modal {
+      background: #1a1d27;
+      border: 1px solid #2d3148;
+      border-radius: 14px;
+      width: 100%;
+      max-width: 680px;
+      max-height: 88vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.6);
+    }
+
+    .help-modal-header {
+      padding: 18px 20px 0;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .help-modal-header h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .help-modal-header p {
+      font-size: 12px;
+      color: #64748b;
+      margin-top: 3px;
+    }
+    .help-close-btn {
+      background: #252940;
+      border: 1px solid #2d3148;
+      border-radius: 6px;
+      color: #94a3b8;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 16px;
+      flex-shrink: 0;
+      transition: background 0.15s;
+    }
+    .help-close-btn:hover { background: #ef444420; color: #ef4444; border-color: #ef444440; }
+
+    /* Tab bar */
+    .help-tabs {
+      display: flex;
+      gap: 4px;
+      padding: 14px 20px 0;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .help-tabs::-webkit-scrollbar { display: none; }
+    .help-tab-btn {
+      padding: 7px 14px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: #64748b;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+    .help-tab-btn:hover { background: #252940; color: #94a3b8; }
+    .help-tab-btn.active {
+      background: #7c3aed20;
+      border-color: #7c3aed60;
+      color: #a78bfa;
+    }
+
+    /* Content area */
+    .help-body {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+    }
+    .help-pane { display: none; }
+    .help-pane.active { display: block; }
+
+    /* Step cards */
+    .step-list { display: flex; flex-direction: column; gap: 12px; }
+    .step-card {
+      background: #0d0f18;
+      border: 1px solid #1e2235;
+      border-radius: 10px;
+      padding: 14px 16px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .step-num {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: #7c3aed30;
+      border: 1px solid #7c3aed60;
+      color: #a78bfa;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .step-content h4 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin-bottom: 4px;
+    }
+    .step-content p {
+      font-size: 13px;
+      color: #94a3b8;
+      line-height: 1.6;
+    }
+    .step-content .tip {
+      margin-top: 6px;
+      font-size: 12px;
+      color: #f59e0b;
+      background: #f59e0b10;
+      border: 1px solid #f59e0b30;
+      border-radius: 6px;
+      padding: 6px 10px;
+    }
+    .step-content .code-inline {
+      background: #1e2235;
+      border: 1px solid #2d3148;
+      border-radius: 4px;
+      padding: 2px 7px;
+      font-family: monospace;
+      font-size: 12px;
+      color: #a3e635;
+    }
+
+    /* Section heading inside pane */
+    .help-section-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: 20px 0 10px;
+    }
+    .help-section-title:first-child { margin-top: 0; }
+
+    /* Info box */
+    .info-box {
+      background: #1e2235;
+      border: 1px solid #2d3148;
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 13px;
+      color: #94a3b8;
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+    .info-box strong { color: #e2e8f0; }
+
+    /* Feature badge */
+    .feat-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 10px;
+    }
+    .feat-badge.blue { background: #3b82f620; color: #60a5fa; border: 1px solid #3b82f640; }
+    .feat-badge.green { background: #22c55e20; color: #4ade80; border: 1px solid #22c55e40; }
+    .feat-badge.purple { background: #7c3aed20; color: #a78bfa; border: 1px solid #7c3aed40; }
+    .feat-badge.orange { background: #f59e0b20; color: #fbbf24; border: 1px solid #f59e0b40; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Social Media Marketing Agent</h1>
+  <div class="status-bar">
+    <div class="status-pill" id="fb-status">
+      <span class="dot" id="fb-dot"></span>
+      <span id="fb-label">FB checking…</span>
+    </div>
+    <div class="status-pill" id="ig-status">
+      <span class="dot" id="ig-dot"></span>
+      <span id="ig-label">IG checking…</span>
+    </div>
+    <button class="btn-help" onclick="openHelp()">
+      <span class="help-icon">📖</span> Panduan
+    </button>
+  </div>
+</header>
+
+<!-- ── Help Modal ──────────────────────────────────────────────────────────── -->
+<div class="help-overlay" id="help-overlay" onclick="handleOverlayClick(event)">
+  <div class="help-modal">
+
+    <div class="help-modal-header">
+      <div>
+        <h2>📖 Panduan Penggunaan</h2>
+        <p>Cara pakai setiap fitur — mudah dipahami, langkah demi langkah</p>
+      </div>
+      <button class="help-close-btn" onclick="closeHelp()" title="Tutup">✕</button>
+    </div>
+
+    <div class="help-tabs">
+      <button class="help-tab-btn active" onclick="switchTab('overview')">🏠 Gambaran Umum</button>
+      <button class="help-tab-btn" onclick="switchTab('status')">🔌 Status Koneksi</button>
+      <button class="help-tab-btn" onclick="switchTab('post')">✍️ Buat Postingan</button>
+      <button class="help-tab-btn" onclick="switchTab('comments')">💬 Cek Komentar</button>
+      <button class="help-tab-btn" onclick="switchTab('ads')">📊 Cek Iklan</button>
+      <button class="help-tab-btn" onclick="switchTab('config')">⚙️ Pengaturan</button>
+      <button class="help-tab-btn" onclick="switchTab('logs')">📋 Live Logs</button>
+    </div>
+
+    <div class="help-body">
+
+      <!-- ── TAB: Gambaran Umum ─────────────────────────────────────────────── -->
+      <div class="help-pane active" id="pane-overview">
+        <div class="info-box">
+          Selamat datang di <strong>Social Media Marketing Agent</strong>! 🎉<br><br>
+          Ini adalah aplikasi yang bisa otomatis posting ke Facebook dan Instagram, membalas komentar, dan memantau iklan kamu — semuanya dari satu halaman ini. Bayangkan seperti asisten robot yang bekerja untukmu 24 jam!
+        </div>
+
+        <div class="help-section-title">Apa saja yang bisa dilakukan?</div>
+        <div class="step-list">
+          <div class="step-card">
+            <div class="step-num">✍️</div>
+            <div class="step-content">
+              <h4>Buat & Posting Otomatis</h4>
+              <p>Robot akan membuat tulisan postingan sendiri menggunakan AI, lalu langsung mempostingnya ke Facebook dan Instagram kamu.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">💬</div>
+            <div class="step-content">
+              <h4>Balas Komentar Otomatis</h4>
+              <p>Kalau ada orang yang berkomentar di postinganmu, robot ini akan membaca komentar itu dan membalasnya secara otomatis dengan jawaban yang sopan dan relevan.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">📊</div>
+            <div class="step-content">
+              <h4>Pantau Performa Iklan</h4>
+              <p>Kamu bisa melihat data iklan Facebook kamu — berapa orang yang melihat, mengklik, dan berapa biayanya.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">⚙️</div>
+            <div class="step-content">
+              <h4>Atur Semua Pengaturan</h4>
+              <p>Ubah token akses, jadwal posting, topik konten, dan berbagai pengaturan lainnya langsung dari halaman ini tanpa perlu edit file.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TAB: Status Koneksi ─────────────────────────────────────────────── -->
+      <div class="help-pane" id="pane-status">
+        <span class="feat-badge blue">🔌 Status Bar — pojok kanan atas</span>
+        <div class="info-box">
+          Di pojok kanan atas ada dua tombol kecil yang menunjukkan apakah aplikasi sudah terhubung ke akun Facebook dan Instagram kamu.
+        </div>
+
+        <div class="help-section-title">Arti warna lampu</div>
+        <div class="step-list">
+          <div class="step-card">
+            <div class="step-num" style="background:#22c55e20;border-color:#22c55e60;color:#22c55e">●</div>
+            <div class="step-content">
+              <h4>Lampu Hijau = Terhubung ✅</h4>
+              <p>Bagus! Aplikasi sudah berhasil masuk ke akun Facebook/Instagram kamu. Semua fitur siap digunakan.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num" style="background:#ef444420;border-color:#ef444460;color:#ef4444">●</div>
+            <div class="step-content">
+              <h4>Lampu Merah = Tidak Terhubung ❌</h4>
+              <p>Ada masalah koneksi. Biasanya karena token akses yang salah atau kadaluarsa. Pergi ke tab <strong>⚙️ Pengaturan</strong> dan periksa <span class="code-inline">pageAccessToken</span>.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num" style="background:#64748b20;border-color:#64748b60;color:#64748b">●</div>
+            <div class="step-content">
+              <h4>Lampu Abu = Belum Dikonfigurasi ⬜</h4>
+              <p>Fitur ini belum diatur. Untuk Instagram, kamu perlu mengisi <span class="code-inline">igUserId</span> dan <span class="code-inline">igAccessToken</span> di pengaturan.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="help-section-title">Cara memperbaiki jika merah</div>
+        <div class="step-list">
+          <div class="step-card">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h4>Pergi ke Meta Developer</h4>
+              <p>Buka <strong>developers.facebook.com</strong> → pilih aplikasimu → Tools → Graph API Explorer.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h4>Salin token baru</h4>
+              <p>Generate token baru dengan permission <span class="code-inline">pages_manage_posts</span> dan <span class="code-inline">pages_read_engagement</span>, lalu salin tokennya.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <h4>Tempel di Pengaturan</h4>
+              <p>Buka tab <strong>⚙️ Pengaturan</strong> di bawah halaman ini, cari <span class="code-inline">pageAccessToken</span>, ganti nilainya dengan token baru, lalu klik <strong>Save Config</strong>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TAB: Buat Postingan ─────────────────────────────────────────────── -->
+      <div class="help-pane" id="pane-post">
+        <span class="feat-badge blue">✍️ Tombol "Post Now"</span>
+        <div class="info-box">
+          Fitur ini meminta AI untuk membuat tulisan postingan secara otomatis, lalu langsung mempublikasikannya ke Facebook Page (dan Instagram jika dikonfigurasi). Proses ini bisa memakan waktu 5–15 detik.
+        </div>
+
+        <div class="help-section-title">Langkah-langkah</div>
+        <div class="step-list">
+          <div class="step-card">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h4>Pilih Jenis Postingan (opsional)</h4>
+              <p>Di kotak dropdown sebelum tombol "Post Now", kamu bisa memilih jenis postingan:</p>
+              <p style="margin-top:8px">
+                🔄 <strong>Auto</strong> — robot pilihkan otomatis secara bergantian<br>
+                📣 <strong>Promo</strong> — postingan promosi produk/diskon<br>
+                ⭐ <strong>Testimonial</strong> — cerita pelanggan yang puas<br>
+                🎯 <strong>Product Highlight</strong> — highlight fitur produk<br>
+                📚 <strong>Educational</strong> — konten edukasi/tips
+              </p>
+              <div class="tip">💡 Pilih "Auto" jika kamu mau biarkan robot yang memilih supaya konten bervariasi.</div>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h4>Klik tombol "▶ Post Now"</h4>
+              <p>Tombol biru di baris aksi. Setelah diklik, tombol akan berubah jadi "Running…" dan kamu harus menunggu.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <h4>Tunggu notifikasi</h4>
+              <p>Kalau berhasil, akan muncul kotak hijau di pojok kanan bawah bertuliskan <strong>"Post published!"</strong>. Postingan baru akan langsung muncul di panel "Recent Posts".</p>
+              <div class="tip">⚠️ Kalau gagal, periksa apakah status FB sudah hijau dan token masih valid.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="help-section-title">Cara mengubah topik/produk postingan</div>
+        <div class="step-list">
+          <div class="step-card">
+            <div class="step-num">⚙️</div>
+            <div class="step-content">
+              <h4>Edit di Config Editor</h4>
+              <p>Scroll ke bawah ke bagian <strong>Config Editor</strong>. Cari bagian <span class="code-inline">"businessContext"</span> dan ubah deskripsi bisnis, produk, dan target audiensnya sesuai kebutuhanmu.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TAB: Cek Komentar ──────────────────────────────────────────────── -->
+      <div class="help-pane" id="pane-comments">
+        <span class="feat-badge green">💬 Tombol "Check Comments"</span>
+        <div class="info-box">
+          Fitur ini akan memeriksa semua komentar terbaru di postingan Facebook kamu, lalu secara otomatis membalas komentar yang belum dibalas menggunakan AI. Balasannya akan terasa natural dan sesuai konteks komentar.
+        </div>
+
+        <div class="help-section-title">Cara menggunakan</div>
+        <div class="step-list">
+          <div class="step-card">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h4>Pastikan koneksi FB hijau</h4>
+              <p>Lihat status bar di pojok kanan atas. Pastikan lampu FB berwarna hijau sebelum lanjut.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h4>Klik "✕ Check Comments"</h4>
+              <p>Tombol abu-abu di baris aksi. Robot akan mulai membaca semua komentar di postingan terbaru kamu.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <h4>Pantau di Live Logs</h4>
+              <p>Di panel <strong>Live Logs</strong> sebelah kiri, kamu bisa melihat proses robot sedang membalas komentar apa. Setiap balasan akan tercatat di sana.</p>
+              <div class="tip">💡 Robot hanya membalas komentar yang BELUM pernah dibalas sebelumnya. Sudah dibalas = dilewati.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="help-section-title">Pengaturan otomatis (jadwal)</div>
+        <div class="step-list">
+          <div class="step-card">
+            <div class="step-num">⏰</div>
+            <div class="step-content">
+              <h4>Jadwal auto reply</h4>
+              <p>Di <strong>Config Editor</strong>, cari <span class="code-inline">"commentReply"</span> → <span class="code-inline">"schedule"</span> untuk mengatur seberapa sering robot cek komentar secara otomatis (format cron, contoh: <span class="code-inline">"*/30 * * * *"</span> = setiap 30 menit).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TAB: Cek Iklan ─────────────────────────────────────────────────── -->
+      <div class="help-pane" id="pane-ads">
+        <span class="feat-badge purple">📊 Tombol "Check Ads"</span>
+        <div class="info-box">
+          Fitur ini mengambil data performa iklan dari Facebook Ads Manager kamu dan menampilkannya dalam tabel yang mudah dibaca. Kamu bisa melihat berapa banyak orang yang melihat iklan, mengklik, dan berapa biayanya.
+        </div>
+
+        <div class="help-section-title">Cara menggunakan</div>
+        <div class="step-list">
+          <div class="step-card">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h4>Klik "▶ Check Ads"</h4>
+              <p>Tombol hijau di baris aksi. Robot akan menghubungi Facebook API untuk mengambil data iklan terbaru.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h4>Lihat tabel Ad Metrics</h4>
+              <p>Scroll ke bawah ke bagian <strong>Ad Metrics (latest)</strong>. Tabel akan memperlihatkan data iklan dengan kolom berikut:</p>
+              <p style="margin-top:8px">
+                📅 <strong>Date</strong> — tanggal data<br>
+                👁️ <strong>Impressions</strong> — berapa kali iklan dilihat<br>
+                👥 <strong>Reach</strong> — berapa orang unik yang melihat<br>
+                🖱️ <strong>Clicks</strong> — berapa kali diklik<br>
+                💰 <strong>Spend</strong> — total biaya iklan (USD)<br>
+                📈 <strong>CTR</strong> — persentase yang mengklik dari yang melihat
+              </p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <h4>Refresh kapan saja</h4>
+              <p>Klik tombol <strong>Refresh</strong> kecil di pojok kanan panel Ad Metrics untuk memperbarui data tanpa harus scroll ke atas.</p>
+              <div class="tip">⚠️ Pastikan kamu sudah mengisi <span class="code-inline">adAccountId</span> di Config Editor agar fitur ini berfungsi.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="help-section-title">Syarat agar fitur Ads berfungsi</div>
+        <div class="step-list">
+          <div class="step-card">
+            <div class="step-num">✔</div>
+            <div class="step-content">
+              <h4>Yang perlu diisi di Config</h4>
+              <p>
+                • <span class="code-inline">adAccountId</span> — ID akun iklan (format: <span class="code-inline">act_123456789</span>)<br>
+                • <span class="code-inline">pageAccessToken</span> — harus punya permission <span class="code-inline">ads_read</span>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TAB: Pengaturan ─────────────────────────────────────────────────── -->
+      <div class="help-pane" id="pane-config">
+        <span class="feat-badge orange">⚙️ Config Editor — bagian paling bawah</span>
+        <div class="info-box">
+          Config Editor adalah tempat kamu mengatur semua pengaturan aplikasi. Formatnya berupa <strong>JSON</strong> — seperti daftar pengaturan dengan nama dan nilainya. Kamu tidak perlu jago coding untuk mengeditnya!
+        </div>
+
+        <div class="help-section-title">Cara mengedit pengaturan</div>
+        <div class="step-list">
+          <div class="step-card">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <h4>Scroll ke bawah halaman</h4>
+              <p>Config Editor ada di bagian paling bawah halaman, dengan latar hitam dan tulisan berwarna hijau.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <h4>Klik di area teks dan edit</h4>
+              <p>Cari bagian yang ingin diubah. Misalnya untuk mengubah token Facebook, cari tulisan <span class="code-inline">"pageAccessToken"</span> lalu ganti nilai di dalam tanda kutip setelah tanda <span class="code-inline">:</span>.</p>
+              <div class="tip">💡 Jangan hapus tanda <span class="code-inline">{ }</span>, <span class="code-inline">[ ]</span>, tanda kutip <span class="code-inline">" "</span>, atau koma <span class="code-inline">,</span> — formatnya harus tetap rapi!</div>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <h4>Klik "Save Config"</h4>
+              <p>Tombol biru di pojok kanan bawah Config Editor. Kalau berhasil, akan muncul notifikasi hijau "Config saved!".</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">4</div>
+            <div class="step-content">
+              <h4>Restart agent (jika perlu)</h4>
+              <p>Beberapa pengaturan (seperti jadwal posting) baru berlaku setelah kamu me-restart server. Lihat pesan di bawah tombol Save untuk info lebih lanjut.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="help-section-title">Pengaturan penting yang sering diubah</div>
+        <div class="step-list">
+          <div class="step-card">
+            <div class="step-num">🔑</div>
+            <div class="step-content">
+              <h4>Token & ID Akun</h4>
+              <p>
+                • <span class="code-inline">pageAccessToken</span> — Token Facebook Page kamu<br>
+                • <span class="code-inline">pageId</span> — ID halaman Facebook kamu<br>
+                • <span class="code-inline">adAccountId</span> — ID akun iklan (<span class="code-inline">act_...</span>)<br>
+                • <span class="code-inline">igUserId</span> + <span class="code-inline">igAccessToken</span> — untuk Instagram
+              </p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">📝</div>
+            <div class="step-content">
+              <h4>Informasi Bisnis</h4>
+              <p>
+                • <span class="code-inline">businessContext.description</span> — Ceritakan bisnis kamu agar AI bisa buat konten yang tepat<br>
+                • <span class="code-inline">businessContext.products</span> — Daftar produk/layanan kamu<br>
+                • <span class="code-inline">businessContext.targetAudience</span> — Siapa target pembeli kamu
+              </p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">⏱️</div>
+            <div class="step-content">
+              <h4>Jadwal Otomatis</h4>
+              <p>
+                • <span class="code-inline">posting.schedule</span> — Kapan posting otomatis berjalan<br>
+                • <span class="code-inline">commentReply.schedule</span> — Kapan cek komentar otomatis<br><br>
+                Format jadwal: <span class="code-inline">"0 9 * * *"</span> = setiap hari jam 9 pagi<br>
+                <span class="code-inline">"*/30 * * * *"</span> = setiap 30 menit
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── TAB: Live Logs ─────────────────────────────────────────────────── -->
+      <div class="help-pane" id="pane-logs">
+        <span class="feat-badge blue">📋 Panel "Live Logs" — kiri tengah</span>
+        <div class="info-box">
+          Live Logs adalah "jendela" untuk melihat apa yang sedang dilakukan robot secara real-time. Setiap kali robot melakukan sesuatu — posting, membalas komentar, mengambil data — akan muncul catatan di sini.
+        </div>
+
+        <div class="help-section-title">Arti warna teks log</div>
+        <div class="step-list">
+          <div class="step-card">
+            <div class="step-num" style="color:#94a3b8;background:#94a3b820;border-color:#94a3b840">i</div>
+            <div class="step-content">
+              <h4 style="color:#94a3b8">Abu-abu — INFO</h4>
+              <p>Informasi biasa. Robot sedang berjalan normal. Tidak ada yang perlu dikhawatirkan.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num" style="color:#22c55e;background:#22c55e20;border-color:#22c55e40">✓</div>
+            <div class="step-content">
+              <h4 style="color:#22c55e">Hijau — SUCCESS</h4>
+              <p>Berhasil! Postingan berhasil dipublikasikan, komentar berhasil dibalas, dsb.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num" style="color:#f59e0b;background:#f59e0b20;border-color:#f59e0b40">!</div>
+            <div class="step-content">
+              <h4 style="color:#f59e0b">Kuning — WARN</h4>
+              <p>Peringatan. Ada sesuatu yang kurang sempurna tapi robot masih bisa berjalan. Perlu diperhatikan.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num" style="color:#ef4444;background:#ef444420;border-color:#ef444440">✕</div>
+            <div class="step-content">
+              <h4 style="color:#ef4444">Merah — ERROR</h4>
+              <p>Ada kesalahan. Biasanya berarti token kadaluarsa, koneksi internet bermasalah, atau konfigurasi salah. Baca pesannya untuk tahu penyebabnya.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="help-section-title">Tips penggunaan</div>
+        <div class="step-list">
+          <div class="step-card">
+            <div class="step-num">🗑️</div>
+            <div class="step-content">
+              <h4>Tombol "Clear"</h4>
+              <p>Klik tombol "Clear" di pojok kanan atas panel Log untuk membersihkan tampilan. Log lama di server tidak ikut terhapus, hanya tampilan yang dibersihkan.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">📡</div>
+            <div class="step-content">
+              <h4>Log muncul otomatis</h4>
+              <p>Log terhubung secara langsung (real-time) ke server. Kalau sambungan terputus, akan muncul pesan "Log stream disconnected" dan otomatis sambung kembali dalam 3 detik.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end help-body -->
+  </div><!-- end help-modal -->
+</div><!-- end help-overlay -->
+
+<main>
+  <!-- FB Token Diagnostic Banner — hidden by default, shown when FB is red -->
+  <div id="fb-diag-banner" style="display:none;background:#ef444410;border:1px solid #ef444440;border-radius:10px;padding:16px 18px;display:none;align-items:flex-start;gap:14px">
+    <div style="font-size:20px;flex-shrink:0">⚠️</div>
+    <div style="flex:1">
+      <div style="font-size:14px;font-weight:600;color:#ef4444;margin-bottom:6px">Facebook tidak terhubung — kemungkinan token salah atau kadaluarsa</div>
+      <div style="font-size:13px;color:#94a3b8;line-height:1.6;margin-bottom:10px">
+        Error <code style="background:#1e2235;padding:1px 6px;border-radius:4px;font-size:12px">404 pada posting</code> atau <code style="background:#1e2235;padding:1px 6px;border-radius:4px;font-size:12px">400 pada /posts</code> biasanya berarti <strong style="color:#e2e8f0">token yang dipakai adalah User Access Token, bukan Page Access Token</strong>. Klik tombol di bawah untuk melihat daftar halaman yang bisa diakses token kamu.
+      </div>
+      <button class="btn btn-secondary" id="btn-diag-pages" onclick="runFbDiag()" style="font-size:12px;padding:7px 14px">
+        🔍 Cek Halaman &amp; Token
+      </button>
+      <div id="fb-diag-result" style="margin-top:12px;font-size:12px;line-height:1.7;display:none"></div>
+    </div>
+    <button onclick="document.getElementById('fb-diag-banner').style.display='none'" style="background:none;border:none;color:#64748b;cursor:pointer;font-size:18px;flex-shrink:0">✕</button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="label">Today's Posts</div>
+      <div class="value" id="stat-posts">—</div>
+      <div class="sub" id="stat-posts-sub"></div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Comments Replied</div>
+      <div class="value" id="stat-comments">—</div>
+      <div class="sub">tracked in DB</div>
+    </div>
+    <div class="stat-card">
+      <div class="label">Latest Ad Spend</div>
+      <div class="value" id="stat-spend">—</div>
+      <div class="sub" id="stat-spend-sub"></div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="actions-row">
+    <select class="post-type-select" id="post-type-select">
+      <option value="">Auto (next in rotation)</option>
+      <option value="promo">Promo</option>
+      <option value="testimonial">Testimonial</option>
+      <option value="product_highlight">Product Highlight</option>
+      <option value="educational">Educational</option>
+    </select>
+    <button class="btn btn-primary" id="btn-post">&#9654; Post Now</button>
+    <button class="btn btn-secondary" id="btn-comments">&#10006; Check Comments</button>
+    <button class="btn btn-success" id="btn-ads">&#9654; Check Ads</button>
+    <button class="btn btn-secondary" id="btn-refresh" style="margin-left:auto" onclick="loadDashboard()">&#8635; Refresh</button>
+  </div>
+
+  <!-- Log + Recent Posts -->
+  <div class="two-col">
+    <div class="panel">
+      <div class="panel-header">
+        <span>Live Logs</span>
+        <button class="btn btn-secondary" style="padding:4px 10px;font-size:11px" onclick="clearLogs()">Clear</button>
+      </div>
+      <div class="log-area" id="log-area"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-header">Recent Posts</div>
+      <div id="post-list" class="post-list">
+        <div class="no-data">Loading…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ads Metrics -->
+  <div class="panel">
+    <div class="panel-header">
+      <span>Ad Metrics (latest)</span>
+      <button class="btn btn-secondary" style="padding:4px 10px;font-size:11px" id="btn-ads-refresh" onclick="refreshAds()">Refresh</button>
+    </div>
+    <div id="ads-table-wrap">
+      <div class="no-data">Loading…</div>
+    </div>
+  </div>
+
+  <!-- Config Editor -->
+  <div class="panel config-editor">
+    <div class="panel-header">Config Editor (config.json)</div>
+    <textarea class="config-textarea" id="config-textarea" spellcheck="false"></textarea>
+    <div class="config-footer">
+      <span id="config-status" style="font-size:12px;color:#64748b">Loading…</span>
+      <button class="btn btn-primary" id="btn-save-config" onclick="saveConfig()">Save Config</button>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── Helpers ────────────────────────────────────────────────────────────────
+
+  function showToast(msg, ok = true) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast show ' + (ok ? 'ok' : 'err');
+    setTimeout(() => { t.className = 'toast'; }, 3000);
+  }
+
+  function setBtn(id, loading) {
+    const b = document.getElementById(id);
+    b.disabled = loading;
+    b.dataset.orig = b.dataset.orig || b.textContent;
+    b.textContent = loading ? 'Running…' : b.dataset.orig;
+  }
+
+  async function apiFetch(url, opts = {}) {
+    const res = await fetch(url, opts);
+    return res.json();
+  }
+
+  // ── FB Diagnostics ─────────────────────────────────────────────────────────
+
+  async function runFbDiag() {
+    const btn = document.getElementById('btn-diag-pages');
+    const result = document.getElementById('fb-diag-result');
+    btn.disabled = true;
+    btn.textContent = 'Mengecek…';
+    result.style.display = 'none';
+
+    try {
+      const data = await apiFetch('/api/fb-pages');
+      let html = '';
+
+      if (!data.success) {
+        html = `<div style="color:#ef4444">❌ ${escHtml(data.error)}</div>` +
+               `<div style="color:#f59e0b;margin-top:6px">💡 ${escHtml(data.hint || '')}</div>`;
+      } else if (data.pages.length === 0) {
+        html = '<div style="color:#f59e0b">⚠️ Tidak ada halaman yang ditemukan. Token yang dipakai mungkin bukan User Access Token — coba generate ulang dari Graph API Explorer.</div>';
+      } else {
+        const rows = data.pages.map(p => `
+          <tr style="border-bottom:1px solid #1e2235">
+            <td style="padding:6px 10px;color:${p.id === data.configuredPageId ? '#4ade80' : '#e2e8f0'}">${escHtml(p.name)}</td>
+            <td style="padding:6px 10px;font-family:monospace;color:#94a3b8">${p.id}</td>
+            <td style="padding:6px 10px;color:#64748b">${p.id === data.configuredPageId ? '✅ Aktif di .env' : ''}</td>
+          </tr>
+        `).join('');
+
+        html = `
+          <table style="width:100%;border-collapse:collapse;background:#0d0f18;border-radius:8px;overflow:hidden">
+            <thead><tr style="background:#1e2235">
+              <th style="padding:6px 10px;text-align:left;color:#64748b;font-size:11px">Nama Halaman</th>
+              <th style="padding:6px 10px;text-align:left;color:#64748b;font-size:11px">Page ID</th>
+              <th style="padding:6px 10px;text-align:left;color:#64748b;font-size:11px">Status</th>
+            </tr></thead>
+            <tbody>${rows}</tbody>
+          </table>
+          <div style="margin-top:10px;padding:10px;background:#f59e0b10;border:1px solid #f59e0b30;border-radius:6px;color:#fbbf24">
+            💡 ${escHtml(data.hint)}
+          </div>
+          <div style="margin-top:8px;color:#64748b">
+            Setelah update <code style="background:#1e2235;padding:1px 5px;border-radius:3px">.env</code>, restart server agar perubahan aktif.
+          </div>`;
+      }
+
+      result.innerHTML = html;
+      result.style.display = 'block';
+    } catch (err) {
+      result.innerHTML = `<div style="color:#ef4444">Gagal menghubungi server: ${escHtml(String(err))}</div>`;
+      result.style.display = 'block';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = '🔍 Cek Halaman & Token';
+    }
+  }
+
+  // ── Status ─────────────────────────────────────────────────────────────────
+
+  async function loadStatus() {
+    const s = await apiFetch('/api/status');
+
+    const fbDot = document.getElementById('fb-dot');
+    const fbLabel = document.getElementById('fb-label');
+    const diagBanner = document.getElementById('fb-diag-banner');
+    if (s.fb) {
+      fbDot.className = 'dot green';
+      fbLabel.textContent = 'FB: ' + (s.pageName || s.pageId || 'Connected');
+      diagBanner.style.display = 'none';
+    } else {
+      fbDot.className = 'dot red';
+      fbLabel.textContent = 'FB disconnected';
+      diagBanner.style.display = 'flex';
+    }
+
+    const igDot = document.getElementById('ig-dot');
+    const igLabel = document.getElementById('ig-label');
+    if (!s.igConfigured) {
+      igDot.className = 'dot';
+      igLabel.textContent = 'IG not configured';
+    } else if (s.ig) {
+      igDot.className = 'dot green';
+      igLabel.textContent = 'IG: ' + (s.igUsername || 'Connected');
+    } else {
+      igDot.className = 'dot red';
+      igLabel.textContent = 'IG error';
+    }
+  }
+
+  // ── Dashboard ──────────────────────────────────────────────────────────────
+
+  async function loadDashboard() {
+    const d = await apiFetch('/api/dashboard');
+
+    document.getElementById('stat-posts').textContent = d.todayPosts.length;
+    document.getElementById('stat-posts-sub').textContent =
+      d.recentPosts.length + ' total in DB';
+
+    const replied = d.recentPosts.filter ? 0 : 0; // placeholder
+    document.getElementById('stat-comments').textContent = '—';
+
+    if (d.metrics && d.metrics.length > 0) {
+      const m = d.metrics[0];
+      document.getElementById('stat-spend').textContent = '$' + (parseFloat(m.spend) || 0).toFixed(2);
+      document.getElementById('stat-spend-sub').textContent =
+        (m.impressions || 0) + ' impressions · ' + (m.clicks || 0) + ' clicks';
+    } else {
+      document.getElementById('stat-spend').textContent = '$0.00';
+      document.getElementById('stat-spend-sub').textContent = 'No ad data yet';
+    }
+
+    renderPosts(d.recentPosts || []);
+    renderMetrics(d.metrics || []);
+  }
+
+  function renderPosts(posts) {
+    const el = document.getElementById('post-list');
+    if (!posts.length) {
+      el.innerHTML = '<div class="no-data">No posts yet</div>';
+      return;
+    }
+    el.innerHTML = posts.map(p => `
+      <div class="post-item">
+        <span class="post-type">${p.post_type}</span>
+        <div class="post-msg">${escHtml(p.message)}</div>
+        <div class="post-time">${new Date(p.posted_at).toLocaleString()}</div>
+      </div>
+    `).join('');
+  }
+
+  function renderMetrics(metrics) {
+    const wrap = document.getElementById('ads-table-wrap');
+    if (!metrics.length) {
+      wrap.innerHTML = '<div class="no-data">No ad metrics yet. Click "Check Ads" to fetch.</div>';
+      return;
+    }
+    wrap.innerHTML = `
+      <table class="metrics-table">
+        <thead>
+          <tr>
+            <th>Date</th><th>Impressions</th><th>Reach</th>
+            <th>Clicks</th><th>Spend</th><th>CTR</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${metrics.map(m => `
+            <tr>
+              <td>${m.date || '—'}</td>
+              <td>${(m.impressions || 0).toLocaleString()}</td>
+              <td>${(m.reach || 0).toLocaleString()}</td>
+              <td>${(m.clicks || 0).toLocaleString()}</td>
+              <td>$${(parseFloat(m.spend) || 0).toFixed(2)}</td>
+              <td>${((parseFloat(m.ctr) || 0) * 100).toFixed(2)}%</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    `;
+  }
+
+  function escHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  // ── Actions ────────────────────────────────────────────────────────────────
+
+  document.getElementById('btn-post').addEventListener('click', async () => {
+    setBtn('btn-post', true);
+    const postType = document.getElementById('post-type-select').value || undefined;
+    try {
+      const r = await apiFetch('/api/post-now', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ postType }),
+      });
+      showToast(r.success ? 'Post published!' : ('Error: ' + r.error), r.success);
+      if (r.success) loadDashboard();
+    } finally {
+      setBtn('btn-post', false);
+    }
+  });
+
+  document.getElementById('btn-comments').addEventListener('click', async () => {
+    setBtn('btn-comments', true);
+    try {
+      const r = await apiFetch('/api/check-comments', { method: 'POST' });
+      showToast(r.success ? 'Comments checked!' : ('Error: ' + r.error), r.success);
+    } finally {
+      setBtn('btn-comments', false);
+    }
+  });
+
+  document.getElementById('btn-ads').addEventListener('click', async () => {
+    setBtn('btn-ads', true);
+    try {
+      await refreshAds();
+    } finally {
+      setBtn('btn-ads', false);
+    }
+  });
+
+  async function refreshAds() {
+    const r = await apiFetch('/api/ads-status');
+    renderMetrics(r.metrics || []);
+    if (r.metrics && r.metrics.length > 0) {
+      const m = r.metrics[0];
+      document.getElementById('stat-spend').textContent = '$' + (parseFloat(m.spend) || 0).toFixed(2);
+    }
+    showToast(r.success ? 'Ads metrics updated!' : ('Ads: ' + (r.error || 'error')), r.success);
+  }
+
+  // ── Logs (SSE) ─────────────────────────────────────────────────────────────
+
+  function appendLog(line) {
+    const area = document.getElementById('log-area');
+    const div = document.createElement('div');
+    div.className = 'log-line';
+
+    const m = line.match(/\[(INFO|WARN|ERROR|SUCCESS|DEBUG)\s*\]/);
+    if (m) div.classList.add(m[1]);
+
+    div.textContent = line;
+    area.appendChild(div);
+    area.scrollTop = area.scrollHeight;
+  }
+
+  function clearLogs() {
+    document.getElementById('log-area').innerHTML = '';
+  }
+
+  function connectSSE() {
+    const es = new EventSource('/api/logs');
+    es.onmessage = e => {
+      try {
+        const { line } = JSON.parse(e.data);
+        appendLog(line);
+      } catch {}
+    };
+    es.onerror = () => {
+      appendLog('[Log stream disconnected — reconnecting…]');
+      es.close();
+      setTimeout(connectSSE, 3000);
+    };
+  }
+
+  // ── Config ─────────────────────────────────────────────────────────────────
+
+  async function loadConfig() {
+    const ta = document.getElementById('config-textarea');
+    const status = document.getElementById('config-status');
+    try {
+      const cfg = await apiFetch('/api/config');
+      ta.value = JSON.stringify(cfg, null, 2);
+      status.textContent = 'Loaded from config.json';
+    } catch {
+      status.textContent = 'config.json not found';
+    }
+  }
+
+  async function saveConfig() {
+    const ta = document.getElementById('config-textarea');
+    const status = document.getElementById('config-status');
+    let parsed;
+    try {
+      parsed = JSON.parse(ta.value);
+    } catch (e) {
+      showToast('Invalid JSON: ' + e.message, false);
+      return;
+    }
+    setBtn('btn-save-config', true);
+    try {
+      const r = await apiFetch('/api/config', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(parsed),
+      });
+      if (r.success) {
+        showToast('Config saved!');
+        status.textContent = 'Saved — restart agent to apply changes';
+      } else {
+        showToast('Save failed: ' + r.error, false);
+      }
+    } finally {
+      setBtn('btn-save-config', false);
+    }
+  }
+
+  // ── Help Modal ─────────────────────────────────────────────────────────────
+
+  function openHelp() {
+    document.getElementById('help-overlay').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeHelp() {
+    document.getElementById('help-overlay').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function handleOverlayClick(e) {
+    if (e.target === document.getElementById('help-overlay')) closeHelp();
+  }
+
+  function switchTab(tabId) {
+    document.querySelectorAll('.help-tab-btn').forEach((btn, i) => {
+      btn.classList.toggle('active', btn.getAttribute('onclick') === `switchTab('${tabId}')`);
+    });
+    document.querySelectorAll('.help-pane').forEach(p => {
+      p.classList.toggle('active', p.id === 'pane-' + tabId);
+    });
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') closeHelp();
+  });
+
+  // ── Init ───────────────────────────────────────────────────────────────────
+
+  loadStatus();
+  loadDashboard();
+  loadConfig();
+  connectSSE();
+</script>
+</body>
+</html>
